@@ -19,9 +19,9 @@ phases:
   build:
     commands:
       # create namespace
-      - kubectl create ns $EKS_NAMESPACE || true
+      - kubectl create ns $EKS_NAMESPACE || true --kubeconfig
       # set current namespace
-      - kubectl config set-context $(kubectl config current-context) --namespace=$EKS_NAMESPACE
+      - kubectl config set-context $(kubectl config current-context) --namespace=$EKS_NAMESPACE --kubeconfig kubeconfig_harbr-eks-demo-QPWM0dm9
       # apply kube specs
-      - kubectl apply -f kubeconfig_harbr-eks-demo-QPWM0dm9.yaml
-      - kubectl apply -f infra/k8s/
+      - kubectl apply -f kubeconfig_harbr-eks-demo-QPWM0dm9.yaml --kubeconfig kubeconfig_harbr-eks-demo-QPWM0dm9
+      - kubectl apply -f infra/k8s/ --kubeconfig kubeconfig_harbr-eks-demo-QPWM0dm9
