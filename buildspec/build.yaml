@@ -1,0 +1,44 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub...
+      - aws --version
+      - docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker images...
+      #Build client image
+      - echo Building client service image...
+      - docker build -t tfawibe/client:latest ./client
+      - docker tag tfawibe/client:latest tfawibe/client:latest
+      #Build moderation image
+      - echo Building moderation service image...
+      - docker build -t tfawibe/client:latest ./moderation
+      - docker tag tfawibe/moderation:latest tfawibe/moderation:latest
+      #Build event-bus image
+      - echo Building event-bus service image...
+      - docker build -t tfawibe/event-bus:latest ./event-bus
+      - docker tag tfawibe/event-bus:latest tfawibe/event-bus:latest
+      #Build posts image
+      - echo Building posts service image...
+      - docker build -t tfawibe/posts:latest ./posts
+      - docker tag tfawibe/posts:latest tfawibe/posts:latest
+      #Build query image
+      - echo Building query service image...
+      - docker build -t tfawibe/query:latest ./query
+      - docker tag tfawibe/query:latest tfawibe/query:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push tfawibe/client:latest
+      - docker push tfawibe/moderation:latest
+      - docker push tfawibe/event-bus:latest
+      - docker push tfawibe/query:latest
+      - docker push tfawibe/posts:latest
+      - echo Writing image definitions file...
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "$REPO_URI:$IMAGE_TAG" | tee imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json

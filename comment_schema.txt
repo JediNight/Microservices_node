@@ -1,0 +1,13 @@
+New-Item app.js -type file
+
+{postId: [{commentId, content},{commentId, content},{commentId, content}],
+ postId: [{commentId, content},{commentId, content},{commentId, content}],
+ postId: [{commentId, content},{commentId, content},{commentId, content}]
+}
+
+{ eventid: {type, title},
+  eventid: {type, title},
+  eventid: {type, title}
+}
+
+For each post, 
