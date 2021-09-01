@@ -14,14 +14,13 @@ phases:
       - docker build -t tfawibe/client:latest ./client
       #Build moderation image
       - echo Building moderation service image...
-      - docker build -t tfawibe/client:latest ./moderation
+      - docker build -t tfawibe/moderation:latest ./moderation
       #Build event-bus image
       - echo Building event-bus service image...
       - docker build -t tfawibe/event-bus:latest ./event-bus
       #Build posts image
       - echo Building posts service image...
       - docker build -t tfawibe/posts:latest ./posts
-
       #Build query image
       - echo Building query service image...
       - docker build -t tfawibe/query:latest ./query
