@@ -13,7 +13,7 @@ phases:
       - pip3 install awscli --force-reinstall --upgrade
       - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-darwin-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin
       # update kube config
-      - aws eks --region us-east-1 update-kubeconfig --name terraform-eks-dev
+      - aws eks --region us-east-1 update-kubeconfig --name harbr-eks-demo-QPWM0dm9
       # get commit hash
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
   build:
