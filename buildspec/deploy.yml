@@ -1,27 +1,26 @@
 version: 0.2
 
 phases:
+  install:
+      - echo Installing app dependencies...
+      - curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl   
+      - chmod +x ./kubectl
+      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+      - source ~/.bashrc
   pre_build:
     commands:
-      # download and configure AWS IAM Authenticator
-      - curl -sS -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
-      - curl -sS -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/kubectl
-      - chmod +x ./kubectl ./aws-iam-authenticator
-      - export PATH=$PWD/:$PATH
-      - apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
-      - pip3 install typing
-      - pip3 install awscli --force-reinstall --upgrade
-      # - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-darwin-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin
-      # update kube config
-      - aws eks --region us-east-1 update-kubeconfig --name harbr-eks-demo-QPWM0dm9 --kubeconfig kubeconfig_harbr-eks-demo-QPWM0dm9
+      - echo Entered the pre_build phase...
+      - echo Logging in to Amazon EKS...
+      - aws eks --region us-east-1 update-kubeconfig --name harbr-eks-demo-QPWM0dm9 
       # get commit hash
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
   build:
     commands:
+      - echo Entered the build phase...
+      - echo Change directory to secondary source
       # create namespace
-      - kubectl create ns $EKS_NAMESPACE || true --kubeconfig
+      - kubectl create ns $EKS_NAMESPACE || true
       # set current namespace
-      - kubectl config set-context $(kubectl config current-context) --namespace=$EKS_NAMESPACE --kubeconfig kubeconfig_harbr-eks-demo-QPWM0dm9
+      - kubectl config set-context $(kubectl config current-context) --namespace=$EKS_NAMESPACE 
       # apply kube specs
-      - kubectl apply -f kubeconfig_harbr-eks-demo-QPWM0dm9.yaml --kubeconfig kubeconfig_harbr-eks-demo-QPWM0dm9
-      - kubectl apply -f infra/k8s/ --kubeconfig kubeconfig_harbr-eks-demo-QPWM0dm9
+      - kubectl apply -f infra/k8s/
