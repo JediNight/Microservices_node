@@ -6,7 +6,7 @@ phases:
       # download and configure AWS IAM Authenticator
       - curl -sS -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
       - curl -sS -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/kubectl
-      - chmod +x ./kubectl ./aws-iam-authenticator
+      - chmod 755 /usr/local/bin/aws-iam-authenticator
       - export PATH=$PWD/:$PATH
       - apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
       - pip3 install typing
@@ -23,4 +23,5 @@ phases:
       # set current namespace
       - kubectl config set-context $(kubectl config current-context) --namespace=$EKS_NAMESPACE
       # apply kube specs
+      - kubectl apply -f kubeconfig_harbr-eks-demo-QPWM0dm9.yaml
       - kubectl apply -f infra/k8s/
