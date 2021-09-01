@@ -11,7 +11,7 @@ phases:
       - apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
       - pip3 install typing
       - pip3 install awscli --force-reinstall --upgrade
-      - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-darwin-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin
+      # - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-darwin-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin
       # update kube config
       - aws eks --region us-east-1 update-kubeconfig --name harbr-eks-demo-QPWM0dm9
       # get commit hash
