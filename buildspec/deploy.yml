@@ -25,6 +25,7 @@ phases:
       - echo Change directory to secondary source
       
       # create namespace
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - kubectl create ns $EKS_NAMESPACE || true
       # set current namespace
       - kubectl config set-context $(kubectl config current-context) --namespace=$EKS_NAMESPACE 
