@@ -1,17 +1,14 @@
 version: 0.2
 
 phases:
+  install:
+      - echo "Install Phase - Nothing to do using latest Amazon Linux Docker Image for CodeBuild which has all AWS Tools - https://github.com/aws/aws-codebuild-docker-images/blob/master/al2/x86_64/standard/3.0/Dockerfile"
   pre_build:
     commands:
       - echo Entered the pre_build phase...
       - echo Logging in to Amazon EKS...
-      - aws eks --region us-east-1 update-kubeconfig --name harbr-eks-demo-QPWM0dm9
-      - echo Installing app dependencies...
-      - curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl   
-      - chmod +x ./kubectl
-      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-      - source ~/.bashrc
+      - aws eks --region us-east-1 update-kubeconfig --name harbr-eks-demo-QPWM0dm9 
+      - docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
       # get commit hash
   build:
     commands:
@@ -20,10 +17,7 @@ phases:
       - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
       - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
       - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
-      - echo Entered the build phase...
-      - echo Change directory to secondary source
-      
-      # create namespace
+      # Setup kubectl with our EKS Cluster and create namespace
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - kubectl create ns $EKS_NAMESPACE || true
       # set current namespace
@@ -32,8 +26,8 @@ phases:
       - kubectl apply -f infra/k8s/
       - echo "Completed applying changes to Kubernetes Objects"
       # Create Artifacts which we can use if we want to continue our pipeline for other stages
-  artifacts:
-    files:
-      - build.json
-      - kube-manifests/*
+artifacts:
+  files:
+    - build.json
+    - kube-manifests/*
 
